@@ -1,26 +1,37 @@
 # from intervalpy import Interval
 # from intervalpy import Interval
+from typing import List
+import math as m
 from Interval import *
 
+def det(A:List[List[Interval]]):
+    return A[0][0] * A[1][1] - A[0][1] * A[1][0]
 
-def min_delta_search(interval: Interval, delta: int | float) -> int | float:
 
-    def f(interval: Interval, delta: int | float) -> int | float:
-        if abs(interval.left) <= abs(interval.right):
-            return interval.left + delta
+def create_int_matrix(A:List[List[int]], delta: int | float):
+    A_int = [[Interval(A[0][0] - delta, A[0][0] + delta), Interval(A[0][1] - delta, A[0][1] + delta)],
+            [Interval(A[1][0] - delta, A[1][0] + delta), Interval(A[1][1] - delta, A[1][1] + delta)]]
+    return A_int
+
+def min_delta_search(A:List[List[int]], delta: int | float) -> bool:
+    def f(A:List[List[int]], delta: int | float):
+        A_int = create_int_matrix(A, delta)
+        det_A = det(A_int)
+        if 0.0 in det_A:
+            return True
         else:
-            return interval.right - delta
-
+            return False
+        
     min_delta = delta
     a = 0
     b = delta
-    while abs(f(interval, min_delta)) > 0.01:
-        min_delta = (a + b) / 2
-        if f(interval, a) * f(interval, min_delta) < 0:
+    while not m.isclose(a, b, rel_tol=1e-14):
+        min_delta = (a+b)/2
+        if f(A, min_delta):
             b = min_delta
         else:
             a = min_delta
-    return min_delta
+    return (a+b)/2
 
 
 if __name__ == "__main__":
@@ -30,15 +41,16 @@ if __name__ == "__main__":
         raise ValueError("Values must be non-negative.")
     delta = min(a, b, c, d)
     print(delta)
+    A_orig = [[a,b],[c,d]]
     A = [[Interval(a - delta, a + delta), Interval(b - delta, b + delta)],
          [Interval(c - delta, c + delta), Interval(d - delta, d + delta)]]
     
-    det_A = A[0][0] * A[1][1] - A[0][1] * A[1][0]
+    det_A = det(A)
     
     print(det_A)
-
-    if 0 in Interval(det_A.left + delta, det_A.right - delta):
-        min_delta = min_delta_search(det_A, delta)
-        print(min_delta)
-
-    # print(Interval(det_A.left + delta, det_A.right - delta))
+    if m.isclose(det_A.mid, 0.0):
+        print("delta = 0")
+    elif 0.0 in Interval(det_A.left, det_A.right):
+        min_delta = min_delta_search(A_orig, delta)
+        print("min delta = ", min_delta)
+    print(det(create_int_matrix(A_orig, min_delta)))
