@@ -1,21 +1,17 @@
-# from intervalpy import Interval
-# from intervalpy import Interval
 from typing import List
 import math as m
 from Interval import *
 
-def det(A:List[List[Interval]]):
+
+def det(A:IntMatrix):
     return A[0][0] * A[1][1] - A[0][1] * A[1][0]
 
 
-def create_int_matrix(A:List[List[int]], delta: int | float):
-    A_int = [[Interval(A[0][0] - delta, A[0][0] + delta), Interval(A[0][1] - delta, A[0][1] + delta)],
-            [Interval(A[1][0] - delta, A[1][0] + delta), Interval(A[1][1] - delta, A[1][1] + delta)]]
-    return A_int
-
-def min_delta_search(A:List[List[int]], delta: int | float) -> bool:
-    def f(A:List[List[int]], delta: int | float):
-        A_int = create_int_matrix(A, delta)
+def min_delta_search(A:Matrix, delta: Number, radCoeffs: Matrix) -> bool:
+    def f(A:Matrix, delta: Number, radCoeffs: Matrix):
+        radA = [[delta * radCoeffs[0][0], delta * radCoeffs[0][1]],
+                [delta * radCoeffs[1][0], delta * radCoeffs[1][1]]]
+        A_int = midrad(A, radA)
         det_A = det(A_int)
         if 0.0 in det_A:
             return True
@@ -27,7 +23,7 @@ def min_delta_search(A:List[List[int]], delta: int | float) -> bool:
     b = delta
     while not m.isclose(a, b, rel_tol=1e-14):
         min_delta = (a+b)/2
-        if f(A, min_delta):
+        if f(A, min_delta, radCoeffs):
             b = min_delta
         else:
             a = min_delta
@@ -44,13 +40,53 @@ if __name__ == "__main__":
     A_orig = [[a,b],[c,d]]
     A = [[Interval(a - delta, a + delta), Interval(b - delta, b + delta)],
          [Interval(c - delta, c + delta), Interval(d - delta, d + delta)]]
-    
+    print("A = \n", A)
+
+
+    ############# rad томографии #############
+    radCoeffs = [[1, 1],
+                 [1, 1]]
+
+    radA = [[delta * radCoeffs[0][0], delta * radCoeffs[0][1]],
+            [delta * radCoeffs[1][0], delta * radCoeffs[1][1]]]
+
+    print("radA =\n", radA)
+    A = midrad(A_orig, radA)
+    print(A)
     det_A = det(A)
     
     print(det_A)
     if m.isclose(det_A.mid, 0.0):
         print("delta = 0")
     elif 0.0 in Interval(det_A.left, det_A.right):
-        min_delta = min_delta_search(A_orig, delta)
+        min_delta = min_delta_search(A_orig, delta, radCoeffs)
         print("min delta = ", min_delta)
-    print(det(create_int_matrix(A_orig, min_delta)))
+        radA = [[min_delta * radCoeffs[0][0], min_delta * radCoeffs[0][1]],
+                [min_delta * radCoeffs[1][0], min_delta * radCoeffs[1][1]]]
+        print(det(midrad(A_orig, radA)))
+
+    ############# rad томографии #############
+
+    radCoeffs = [[1, 0],
+                 [1, 0]]
+
+    radA = [[delta * radCoeffs[0][0], delta * radCoeffs[0][1]],
+            [delta * radCoeffs[1][0], delta * radCoeffs[1][1]]]
+
+    print("radA =\n", radA)
+    A = midrad(A_orig, radA)
+    print(A)
+    det_A = det(A)
+    
+    print(det_A)
+    if m.isclose(det_A.mid, 0.0):
+        print("delta = 0")
+    elif 0.0 in Interval(det_A.left, det_A.right):
+        min_delta = min_delta_search(A_orig, delta, radCoeffs)
+        print("min delta = ", min_delta)
+        radA = [[min_delta * radCoeffs[0][0], min_delta * radCoeffs[0][1]],
+                [min_delta * radCoeffs[1][0], min_delta * radCoeffs[1][1]]]
+        print(det(midrad(A_orig, radA)))
+
+
+        # 1.05 1 1 0.95
