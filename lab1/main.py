@@ -38,12 +38,9 @@ if __name__ == "__main__":
     delta = min(a, b, c, d)
     print(delta)
     A_orig = [[a,b],[c,d]]
-    A = [[Interval(a - delta, a + delta), Interval(b - delta, b + delta)],
-         [Interval(c - delta, c + delta), Interval(d - delta, d + delta)]]
-    print("A = \n", A)
-
 
     ############# rad томографии #############
+    print("\nтомография\n")
     radCoeffs = [[1, 1],
                  [1, 1]]
 
@@ -52,6 +49,7 @@ if __name__ == "__main__":
 
     print("radA =\n", radA)
     A = midrad(A_orig, radA)
+    print("A = \n", A)
     print(A)
     det_A = det(A)
     
@@ -65,8 +63,8 @@ if __name__ == "__main__":
                 [min_delta * radCoeffs[1][0], min_delta * radCoeffs[1][1]]]
         print(det(midrad(A_orig, radA)))
 
-    ############# rad томографии #############
-
+    ############# rad регрессии #############
+    print("\nрегрессия\n")
     radCoeffs = [[1, 0],
                  [1, 0]]
 
@@ -75,6 +73,7 @@ if __name__ == "__main__":
 
     print("radA =\n", radA)
     A = midrad(A_orig, radA)
+    print("A = \n", A)
     print(A)
     det_A = det(A)
     
@@ -89,4 +88,4 @@ if __name__ == "__main__":
         print(det(midrad(A_orig, radA)))
 
 
-        # 1.05 1 1 0.95
+        # 1.05 1 0.95 1
