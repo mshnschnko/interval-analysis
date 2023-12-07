@@ -82,16 +82,20 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(figsize=(4, 4))
 
 
-    
+    print('iterations')
     one = abs(X_k[0][0].b - X_k[0][0].a)
     two = abs(X_k[0][1].b - X_k[0][1].a)
-    print(one, two)
+    mid1 = abs((X_k[0][0].a + X_k[0][0].b)/2)
+    mid2 = abs((X_k[0][1].a + X_k[0][1].b)/2)
+    print(one, two, mid1, mid2)
     iveRect = plt.Rectangle((X_k[0][1].a, X_k[0][0].a),two , one, edgecolor='red', facecolor='none', label='Брус ive', linewidth=1.5)
     plt.gca().add_patch(iveRect)
     for i in range(1, 10):
         one = abs(X_k[i][0].b - X_k[i][0].a)
         two = abs(X_k[i][1].b - X_k[i][1].a)
-        print(one, two)
+        mid1 = abs((X_k[i][0].a + X_k[i][0].b)/2)
+        mid2 = abs((X_k[i][1].a + X_k[i][1].b)/2)
+        print(one, two, mid1, mid2)
         iveRect = plt.Rectangle((X_k[i][1].a, X_k[i][0].a),two , one, edgecolor='red', facecolor='none', linewidth=1.5)
         plt.gca().add_patch(iveRect)
     x = np.arange(-1, 1, 0.01)
@@ -109,8 +113,9 @@ if __name__ == "__main__":
 
     x = -0.5 + np.sqrt(1.25)
     y = np.sqrt(x)
-    print("{}".format(abs(X_k[9][0].a - y)), "{}".format(abs(X_k[9][1].a - x)))
-    print("{}".format(abs(X_k[9][0].b - y)), "{}".format(abs(X_k[9][1].b - x)))
+    print("последняя итерация")
+    print("{}".format(abs((X_k[9][0].a + X_k[9][0].b)/2 - y)), "{}".format(abs((X_k[9][1].a + X_k[9][1].b) / 2 - x)))
+    # print("{}".format(abs(X_k[9][0].b - y)), "{}".format(abs(X_k[9][1].b - x)))
     # for i in range(10):
         # print("{}".format(abs(X_k[i][0].a - y)), "{}".format(abs(X_k[i][1].a - x)))
 
